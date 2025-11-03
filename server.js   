@@ -1,0 +1,50 @@
+require('dotenv').config();
+const express = require('express');
+const cors = require('cors');
+const { Pool } = require('pg');
+
+const app = express();
+const port = process.env.PORT || 5000;
+
+// Middleware
+app.use(cors());
+app.use(express.json()); // Remplace body-parser
+
+// Configuration PostgreSQL
+const pool = new Pool({
+  user: process.env.PG_USER,
+  host: process.env.PG_HOST,
+  database: process.env.PG_DB,
+  password: process.env.PG_PASSWORD,
+  port: process.env.PG_PORT,
+});
+
+// Route test
+app.get('/', (req, res) => {
+  res.send('Server is running!');
+});
+
+// Endpoint pour recevoir les réponses
+app.post('/submit', async (req, res) => {
+  const { nom, email, reponse } = req.body;
+
+  if (!nom || !email || !reponse) {
+    return res.status(400).json({ success: false, error: 'Tous les champs sont requis' });
+  }
+
+  try {
+    const result = await pool.query(
+      'INSERT INTO reponses(nom, email, reponse) VALUES($1, $2, $3) RETURNING *',
+      [nom, email, reponse]
+    );
+    res.json({ success: true, data: result.rows[0] });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// Démarrage du serveur
+app.listen(port, () => {
+  console.log(`Server running on http://localhost:${port}`);
+});

@@ -1,24 +1,12 @@
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import RadarDashboard from "./components/RadarDashboard";
+import "./index.css"; // Assure-toi que ce fichier contient bien les directives Tailwind
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <main className="min-h-screen bg-background text-white font-sans">
+      <RadarDashboard />
+    </main>
   );
 }
 
